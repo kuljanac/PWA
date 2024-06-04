@@ -1,0 +1,68 @@
+.admin-panel {
+  padding: 20px;
+  color: #FFD700;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  justify-content: center;
+}
+
+.admin-section {
+  background-color: #181818;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.admin-section.full-width {
+  grid-column: span 3;
+}
+
+.admin-section h2 {
+  margin-bottom: 10px;
+}
+
+.admin-section form div {
+  margin-bottom: 10px;
+}
+
+.admin-section form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.admin-section form input,
+.admin-section form select,
+.admin-section form textarea {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.admin-section button {
+  background-color: #FFD700;
+  border: none;
+  color: #000000;
+  padding: 10px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.admin-section button:hover {
+  background-color: #FFD700;
+  color: #000000;
+  font-weight: bold;
+}
+
+.export-reservations {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.export-reservations input {
+  margin-bottom: 10px;
+  width: 100%;
+}

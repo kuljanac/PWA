@@ -1,37 +1,88 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { sendWebSocketMessage, subscribeToMessages } from '../api/websocket';
+import React, { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+import './ReservationForm.css';
+import Confetti from 'react-confetti';
 
-const ReservationForm = () => {
-  const { eventId } = useParams();
-  const [userId, setUserId] = useState('');
+const ReservationForm = ({ eventId }) => {
   const [tableNumber, setTableNumber] = useState('');
-  const [numberOfGuests, setNumberOfGuests] = useState(1);
+  const [numberOfGuests, setNumberOfGuests] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [event, setEvent] = useState(null);
+  const { user } = useContext(AuthContext);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/events/${eventId}`);
+        setEvent(response.data);
+      } catch (error) {
+        console.error('Failed to fetch event:', error.message);
+      }
+    };
+    fetchEvent();
+  }, [eventId]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    sendWebSocketMessage({
-      type: 'CREATE_RESERVATION',
-      payload: { userId, eventId, tableNumber, numberOfGuests }
-    });
+    const payload = {
+      eventId: parseInt(eventId),
+      tableNumber: parseInt(tableNumber),
+      numberOfGuests: parseInt(numberOfGuests),
+      email,
+      lastName,
+      userId: user ? user.id : null
+    };
+    try {
+      console.log('Submitting payload:', payload);
+      await axios.post('http://localhost:5000/api/reservations', payload);
+      alert('Reservation created successfully');
+      setTableNumber('');
+      setNumberOfGuests('');
+      setLastName('');
+      setEmail('');
+      setShowConfetti(true); // Show confetti
+      setTimeout(() => setShowConfetti(false), 5000); // Hide confetti after 5 seconds
+    } catch (error) {
+      console.error('Failed to create reservation:', error.message);
+      alert('Failed to create reservation');
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>User ID</label>
-        <input type="text" value={userId} onChange={(e) => setUserId(e.target.value)} required />
-      </div>
-      <div>
-        <label>Table Number</label>
-        <input type="number" value={tableNumber} onChange={(e) => setTableNumber(e.target.value)} required />
-      </div>
-      <div>
-        <label>Number of Guests</label>
-        <input type="number" value={numberOfGuests} onChange={(e) => setNumberOfGuests(e.target.value)} required />
-      </div>
-      <button type="submit">Reserve</button>
-    </form>
+    <div>
+      {showConfetti && <Confetti />}
+      <form onSubmit={handleSubmit} className="reservation-form">
+        <label>
+          Table Number:
+          {event && event.name.includes('Secret') ? (
+            <select value={tableNumber} onChange={(e) => setTableNumber(e.target.value)} required>
+              <option value="">Select a table</option>
+              {[...Array(40).keys()].map(num => (
+                <option key={num + 20} value={num + 20}>{num + 20}</option>
+              ))}
+            </select>
+          ) : (
+            <input type="number" value={tableNumber} onChange={(e) => setTableNumber(e.target.value)} required />
+          )}
+        </label>
+        <label>
+          Number of Guests:
+          <input type="number" value={numberOfGuests} onChange={(e) => setNumberOfGuests(e.target.value)} required />
+        </label>
+        <label>
+          Last Name:
+          <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+        </label>
+        <label>
+          Email:
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        </label>
+        <button type="submit">Reserve</button>
+      </form>
+    </div>
   );
 };
 

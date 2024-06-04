@@ -1,34 +1,34 @@
-const socket = new WebSocket('ws://localhost:5000');
+let socket;
 
-socket.onopen = () => {
-  console.log('WebSocket connection established');
-};
+export const connectWebSocket = () => {
+  socket = new WebSocket('ws://localhost:5000');
 
-socket.onclose = () => {
-  console.log('WebSocket connection closed');
-};
+  socket.onopen = () => {
+    console.log('WebSocket connection established');
+  };
 
-socket.onerror = (error) => {
-  console.error('WebSocket error:', error);
-};
+  socket.onclose = () => {
+    console.log('WebSocket connection closed');
+  };
 
-const sendWebSocketMessage = (message) => {
-  console.log('Sending message to server:', message);
-  if (socket.readyState === WebSocket.OPEN) {
-    socket.send(JSON.stringify(message));
-  } else {
-    socket.addEventListener('open', () => {
-      socket.send(JSON.stringify(message));
-    });
-  }
-};
-
-const subscribeToMessages = (callback) => {
-  socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Received data from server:', data);
-    callback(data);
+  socket.onerror = (error) => {
+    console.log('WebSocket error', error);
   };
 };
 
-export { sendWebSocketMessage, subscribeToMessages, socket };
+export const sendWebSocketMessage = (message) => {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    socket.send(JSON.stringify(message));
+  } else {
+    console.error('WebSocket is not open');
+  }
+};
+
+export const subscribeToWebSocket = (callback) => {
+  if (socket) {
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      callback(data);
+    };
+  }
+};

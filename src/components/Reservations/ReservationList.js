@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { sendWebSocketMessage, subscribeToMessages } from '../api/websocket';
+import axios from 'axios';
+import './Reservations.css';
 
-const ReservationList = () => {
+const ReservationsList = ({ eventId }) => {
   const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    subscribeToMessages((data) => {
-      if (data.type === 'reservations') {
-        setReservations(data.reservations);
+    const fetchReservations = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/events/${eventId}/reservations`);
+        setReservations(response.data);
+      } catch (error) {
+        console.error('Failed to fetch reservations', error);
       }
-    });
+    };
 
-    sendWebSocketMessage({ type: 'fetchReservations' });
-  }, []);
+    fetchReservations();
+  }, [eventId]);
 
   return (
-    <div>
-      <h1>Reservations</h1>
+    <div className="reservations">
+      <h2>Reservations</h2>
       <ul>
-        {reservations.map(reservation => (
+        {reservations.map((reservation) => (
           <li key={reservation.id}>
-            <p>{reservation.userId}</p>
-            <p>{reservation.eventId}</p>
-            <p>{new Date(reservation.createdAt).toLocaleString()}</p>
+            Table {reservation.tableNumber}, Last Name: {reservation.lastName}, Guests: {reservation.numberOfGuests}
           </li>
         ))}
       </ul>
@@ -30,4 +32,4 @@ const ReservationList = () => {
   );
 };
 
-export default ReservationList;
+export default ReservationsList;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './CreateEvent.css';
 
 const CreateEvent = () => {
   const [name, setName] = useState('');
@@ -12,34 +13,33 @@ const CreateEvent = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post('/api/events', { name, date, description, imageUrl });
-      alert('Event created successfully');
-      navigate('/');
+      await axios.post('http://localhost:5000/api/events', { name, date, description, imageUrl });
+      navigate('/events');
     } catch (error) {
-      console.error('Create event failed', error);
-      alert('Create event failed');
+      console.error('Failed to create event', error);
+      alert('Failed to create event');
     }
   };
 
   return (
-    <div>
+    <div className="create-event-container">
       <h2>Create Event</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Name:</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
         <div>
           <label>Date:</label>
-          <input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} />
+          <input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} required />
         </div>
         <div>
           <label>Description:</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
         </div>
         <div>
           <label>Image URL:</label>
-          <input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+          <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
         </div>
         <button type="submit">Create Event</button>
       </form>

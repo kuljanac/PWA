@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
-
 const EditReservation = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [tableNumber, setTableNumber] = useState('');
   const [numberOfGuests, setNumberOfGuests] = useState('');
-
   useEffect(() => {
     const fetchReservation = async () => {
       const response = await axios.get(`/api/reservations/${id}`, {
@@ -19,7 +17,6 @@ const EditReservation = () => {
     };
     fetchReservation();
   }, [id]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -34,7 +31,6 @@ const EditReservation = () => {
       alert('Failed to update reservation');
     }
   };
-
   return (
     <div className="container">
       <h2>Edit Reservation</h2>
@@ -56,5 +52,4 @@ const EditReservation = () => {
     </div>
   );
 };
-
 export default EditReservation;

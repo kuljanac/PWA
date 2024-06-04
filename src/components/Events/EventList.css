@@ -1,0 +1,56 @@
+.event-list {
+  padding: 20px;
+}
+
+.events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.event {
+  background-color: #181818;
+  padding: 20px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  color: #FFD700;
+  width: 200px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hot-event {
+  border: 2px solid red;
+}
+
+.event h3 {
+  margin: 0;
+}
+
+.event p {
+  margin: 5px 0;
+}
+
+.event button,
+.event a {
+  background-color: #FFD700;
+  color: #000000;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.event button:hover,
+.event a:hover {
+  background-color: #FFD700;
+  color: #000000;
+  font-weight: bold;
+}

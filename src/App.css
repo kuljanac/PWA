@@ -1,44 +1,22 @@
+
 body {
   font-family: Arial, sans-serif;
-  background-color: #181f18;
   margin: 0;
   padding: 0;
-  color: #fff;
-}
-
-.app {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-header {
-  text-align: center;
-  background-color: #333;
-  color: white;
-  padding: 10px 0;
+  color: #FFD700;
 }
 
 main {
-  background-color: white;
   padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  border-bottom: 1px solid #ddd;
+footer {
+  background-color: #000000;
+  color: #FFD700;
+  text-align: center;
   padding: 10px 0;
-}
-
-li h3 {
-  margin: 0 0 5px 0;
-}
-
-li p {
-  margin: 5px 0;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }

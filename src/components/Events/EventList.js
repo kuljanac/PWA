@@ -1,34 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { sendWebSocketMessage, subscribeToMessages } from '../api/websocket';
+import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
+import './EventList.css';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    subscribeToMessages((data) => {
-      if (data.type === 'events') {
-        setEvents(data.data);
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/events');
+        setEvents(response.data);
+      } catch (error) {
+        console.error('Failed to fetch events', error);
       }
-    });
-
-    sendWebSocketMessage({ type: 'GET_EVENTS' });
+    };
+    fetchEvents();
   }, []);
 
-  if (events.length === 0) {
-    return <p>No events available</p>;
-  }
+  const handleDelete = async (eventId) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/events/${eventId}`);
+      setEvents(events.filter(event => event.id !== eventId));
+    } catch (error) {
+      console.error('Failed to delete event', error);
+      alert('Failed to delete event');
+    }
+  };
 
   return (
-    <div>
-      <h1>Events</h1>
-      <ul>
+    <div className="event-list">
+      <h2>Latest Events</h2>
+      <div className="events">
         {events.map(event => (
-          <li key={event.id}>
-            {event.name} - {new Date(event.date).toLocaleString()}
-            <button onClick={() => window.location.href=`/reserve/${event.id}`}>Reserve</button>
-          </li>
+          <div key={event.id} className={`event ${event.isHot ? 'hot-event' : ''}`} style={{ backgroundImage: `url(${event.imageUrl})` }}>
+            <h3>{event.name}</h3>
+            <p>{new Date(event.date).toLocaleString()}</p>
+            <p>{event.description}</p>
+            <Link to={`/event/${event.id}`}>Reservation</Link>
+            {user && user.role === 'admin' && (
+              <>
+                <button onClick={() => handleDelete(event.id)}>Delete</button>
+                <Link to={`/edit-event/${event.id}`}>Edit</Link>
+              </>
+            )}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
