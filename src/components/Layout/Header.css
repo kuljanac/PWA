@@ -1,0 +1,19 @@
+header {
+  background-color: #181f18;
+  padding: 10px;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+  padding: 10px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
